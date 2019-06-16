@@ -192,13 +192,15 @@ public class Roboton : MonoBehaviour
     }
     void Shoot()
     {
+        
         Instantiate(projectiles[0], transform.position, Quaternion.identity);
+        FindObjectOfType<AudioManager>().PlaySound("NormalAttack");
 
     }
     void SeekerProjectile()
     {
         Instantiate(projectiles[1], transform.position, Quaternion.identity);
-
+        FindObjectOfType<AudioManager>().PlaySound("SeekerAttack");
     }
     void ExplodeOnDeath()
     {
@@ -244,9 +246,11 @@ public class Roboton : MonoBehaviour
     public void TakeDamage(float damage)
     {
         enemyHealth -= damage;
+        FindObjectOfType<AudioManager>().PlaySound("EnemyTakeDamage");
         if (enemyHealth <= 0)
         {
             canMove = false;
+            speed = 0f;
             canAttack = false;//Disable attack while explodeAnim       
             StartCoroutine(ExplosionDelay(explodeTimer));//Delay Death
             Destroy(gameObject, 1.5f);
@@ -279,7 +283,9 @@ public class Roboton : MonoBehaviour
     {
         anim.SetTrigger("Explode");
         yield return new WaitForSeconds(delay);
+        FindObjectOfType<AudioManager>().PlaySound("EnemyDeath");
         ExplodeOnDeath();
+        
     }
     #endregion
 

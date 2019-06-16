@@ -1,8 +1,11 @@
 fileFormatVersion: 2
-guid: c8606b45fb17b9247ab16a2900a69102
+guid: 66a5c7b5e696e4d4294719c5fddfa20a
 TextureImporter:
   fileIDToRecycleName:
-    21300000: TrackingLaser_0
+    21300000: RegularLaser_0
+    21300002: RegularLaser_1
+    21300004: RegularLaser_2
+    21300006: RegularLaser_3
   externalObjects: {}
   serializedVersion: 9
   mipmaps:
@@ -46,7 +49,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 55
+  spritePixelsToUnits: 40
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -85,13 +88,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: TrackingLaser_0
+      name: RegularLaser_0
       rect:
         serializedVersion: 2
-        x: 110
-        y: 32
-        width: 17
-        height: 21
+        x: 14
+        y: 19
+        width: 7
+        height: 46
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -99,7 +102,67 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 158fccf734472594e9426c120169da31
+      spriteID: 5eab30eab4d86ae48892d2f8e8d230ab
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: RegularLaser_1
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 22
+        width: 7
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 82baf007f8502234094e194c9ec83c84
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: RegularLaser_2
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 14
+        width: 7
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1c92baf8794bcd04492b067e96de80e2
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: RegularLaser_3
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 14
+        width: 7
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 68dd5bffe9112f247b786c62ed25f4b8
       vertices: []
       indices: 
       edges: []
@@ -107,7 +170,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 6fa01bda70d5aea4a9c9fbf31620eafa
+    spriteID: 341007c5fdd51f84d9ca3bfcd85037f2
     vertices: []
     indices: 
     edges: []

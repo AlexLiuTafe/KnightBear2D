@@ -58,7 +58,7 @@ public class Snake : MonoBehaviour
         anim = GetComponent<Animator>();
         //enemyHealthBar = gameObject.transform.GetComponentInChildren<Slider>();
         //target = GameObject.FindGameObjectWithTag("Player").transform;
-        target = Waypoint.wayPoints[0];
+        target = WaypointSnake.wayPoints[0];
         currentState = SnakeState.Patrol;
     }
 
@@ -116,12 +116,12 @@ public class Snake : MonoBehaviour
         if (Vector2.Distance(transform.position, target.position) <= 0.2f)
         {
             waypointIndex++;
-            target = Waypoint.wayPoints[waypointIndex];
+            target = WaypointSnake.wayPoints[waypointIndex];
 
         }
         else
         {
-            if (waypointIndex >= Waypoint.wayPoints.Length - 1)
+            if (waypointIndex >= WaypointSnake.wayPoints.Length - 1)
             {
                 waypointIndex = 0;// Doesnt reset to 0 ??
 
@@ -172,6 +172,7 @@ public class Snake : MonoBehaviour
         {
             
             player.TakeDamage(damage);
+           
         }
 
     }

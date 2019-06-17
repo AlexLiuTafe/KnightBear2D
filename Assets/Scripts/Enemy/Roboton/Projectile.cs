@@ -37,9 +37,6 @@ public class Projectile : MonoBehaviour
             }
             
         }
-        
-
-
 
     }
 
@@ -48,6 +45,7 @@ public class Projectile : MonoBehaviour
         PlayerMovement player = col.GetComponent<PlayerMovement>();
         if (col.CompareTag("Player"))
         {
+            
             player.TakeDamage(projectileDamage);
             DestroyProjectile();
         }

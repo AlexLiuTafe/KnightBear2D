@@ -3209,17 +3209,17 @@ PrefabInstance:
     - target: {fileID: 3598759611610005812, guid: 621b5e3eac95e13498f40465d3c4a118,
         type: 3}
       propertyPath: baseSpeed
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3598759611610005812, guid: 621b5e3eac95e13498f40465d3c4a118,
         type: 3}
       propertyPath: moveSpeed
-      value: 7
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3598759611610005812, guid: 621b5e3eac95e13498f40465d3c4a118,
         type: 3}
       propertyPath: dodgeSpeed
-      value: 10
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3598759611610005812, guid: 621b5e3eac95e13498f40465d3c4a118,
         type: 3}

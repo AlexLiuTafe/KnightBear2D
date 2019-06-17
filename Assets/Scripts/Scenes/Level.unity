@@ -2835,6 +2835,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1933868184}
+  - component: {fileID: 1933868185}
   m_Layer: 0
   m_Name: Waypoints(Snake)
   m_TagString: Untagged
@@ -2858,6 +2859,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1933868185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1933868183}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af532979b3564ac48a0caad556491a71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1944347202
 GameObject:
   m_ObjectHideFlags: 0
@@ -3209,12 +3222,12 @@ PrefabInstance:
     - target: {fileID: 3598759611610005812, guid: 621b5e3eac95e13498f40465d3c4a118,
         type: 3}
       propertyPath: baseSpeed
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3598759611610005812, guid: 621b5e3eac95e13498f40465d3c4a118,
         type: 3}
       propertyPath: moveSpeed
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3598759611610005812, guid: 621b5e3eac95e13498f40465d3c4a118,
         type: 3}

@@ -243,9 +243,11 @@ public class Roboton : MonoBehaviour
             }
         }
     }
+   
     public void TakeDamage(float damage)
     {
         enemyHealth -= damage;
+        StartCoroutine(ChangeColor(0.15f));
         FindObjectOfType<AudioManager>().PlaySound("EnemyTakeDamage");
         if (enemyHealth <= 0)
         {
@@ -286,6 +288,12 @@ public class Roboton : MonoBehaviour
         FindObjectOfType<AudioManager>().PlaySound("EnemyDeath");
         ExplodeOnDeath();
         
+    }
+    IEnumerator ChangeColor(float delay)
+    {
+        rend.color = Color.red;
+        yield return new WaitForSeconds(delay);
+        rend.color = Color.white;
     }
     #endregion
 

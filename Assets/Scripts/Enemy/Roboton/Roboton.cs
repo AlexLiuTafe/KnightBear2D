@@ -1,8 +1,8 @@
 ﻿//==================================
-//Author :
-//Title :
-//Date :
-//Details :
+//Author :ALEX LIU
+//Title :ENEMY AI
+//Date :4 June 2019
+//Details : Referencing from (BLACKTHORNPROD) for Chase,Retreat and Stopping Distance
 //URL (Optional) :
 //==================================
 using System.Collections;
@@ -11,75 +11,51 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class Roboton : MonoBehaviour
+public class Roboton : EnemyAI
 {
 
-    [Header("Enemy Stats")]
-    public float enemyHealth;
-    public float enemyMaxHealth;
-    public float detectionRange;
-    public Transform target;
-    private Vector2 direction;
-
-
-    [Header("Enemy Health Bar")]
-    //public Slider enemyHealthBar;
-
     [Header("Enemy Speed")]
-    public float speed;
-    public float patrolSpeed;
-    public float attackRange;
-    public float runSpeed;
     public float retreatSpeed;
-    public float stopDistance;
     public float retreatDistance;
-    private bool canMove = true;
+
 
     [Header("Attack")]
     public GameObject[] projectiles;
-    public float shootDelay;
+	public float attackRange;
+	public float shootDelay;
     public float explosionRadius;
     public float explosionDamage;
     public float explodeTimer;
-    private bool normalAttack = false; //preventing Double Shooting
-    private bool canAttack = false;
 
     private float shootCooldown;
     public float shootStartTimer;
     private float seekerCooldown;
     public float seekerStartTimer;
-
-    [Header("Animation")]
-    public float idleAnim;//idleAnim parameter
-
-    public Animator anim;
-    private SpriteRenderer rend;
     [Header("Waypoint and State")]
 
     private int waypointIndex;
-    public State currentState;
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawWireSphere(transform.position, explosionRadius);//Showing Explosion Radius
-        Gizmos.DrawWireSphere(transform.position, detectionRange);//Showing Deetecion Radius
-    }
-    void Start()
-    {
 
-        rend = GetComponent<SpriteRenderer>();
-        anim = GetComponent<Animator>();
-        //enemyHealthBar = gameObject.transform.GetComponentInChildren<Slider>();
-        //target = GameObject.FindGameObjectWithTag("Player").transform;
+	protected  override void OnDrawGizmos()
+	{
+		base.OnDrawGizmos();
+		Gizmos.DrawWireSphere(transform.position, attackRange);//Showing Attack Range
+	}
+	protected override void Start()
+    {
+        base.Start();
+		//enemyHealthBar = gameObject.transform.GetComponentInChildren<Slider>();
+		//target = GameObject.FindGameObjectWithTag("Player").transform;
+		seekerCooldown = seekerStartTimer;
         target = Waypoint.wayPoints[0];
-        seekerCooldown = seekerStartTimer;
-        currentState = State.Patrol;
+      
     }
 
     // Update is called once per frame
-    void Update()
+   public override void Update()
     {
         //EnemyHealth
         //enemyHealthBar.value = Mathf.Clamp01(enemyHealth / enemyMaxHealth);
+
         if (target && canMove == true)
         {
             switch (currentState)
@@ -87,21 +63,20 @@ public class Roboton : MonoBehaviour
                 case State.Patrol:
                     Patrol();
                     break;
-                case State.Active:
+                case State.Active: //HOW TO INSERT RETREAT FUNCTION
                     Chase();
-                    StopDistance();
                     Retreat();
+                    StopDistance();
                     break;
 
 
             }
             EnemyAnimator();
         }
-        else if (canMove == false)
+        if (canMove == false)
         {
             speed = 0;
         }
-
         #region UPDATE Attack
         if (canAttack == true && target && Vector2.Distance(transform.position, target.position) < attackRange)//Checking if player is exist in game
         {
@@ -131,46 +106,25 @@ public class Roboton : MonoBehaviour
        
     }
 
-    void Patrol()
+    public override void Patrol()
     {
-        canAttack = false;
-        speed = patrolSpeed;
-        direction = (target.transform.position - transform.position).normalized;//Storing Direction for Anim facing direction
-        transform.position = Vector2.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
-        idleAnim = 1;
-        DetectTarget();
-       
-        
+		base.Patrol();
         if (Vector2.Distance(transform.position, target.position) <= 0.2f)
         {
-            waypointIndex++;
+            waypointIndex++; 
+            if (waypointIndex >= Waypoint.wayPoints.Length)
+            {
+                waypointIndex = 0;
+
+            }
+            
             target = Waypoint.wayPoints[waypointIndex];
 
         }
-        else
-        {
-            if (waypointIndex >= Waypoint.wayPoints.Length - 1)
-            {
-                waypointIndex = 0;// Doesnt reset to 0 ??
-                
-            }
-        }
+        
     }
 
-    void Chase()
-    {
-        canAttack = true;
-        normalAttack = true;
-        if (Vector2.Distance(transform.position, target.position) > stopDistance)
-        {
-            speed = runSpeed;
-            direction = (target.transform.position - transform.position).normalized; //storing facing direction to target.
-            transform.position = Vector2.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
-            idleAnim = 1;
-        }
-
-
-    }
+   
     void Retreat()
     {
         if (Vector2.Distance(transform.position, target.position) < retreatDistance)
@@ -182,14 +136,7 @@ public class Roboton : MonoBehaviour
 
 
     }
-    void StopDistance()
-    {
-        if (Vector2.Distance(transform.position, target.position) < stopDistance && Vector2.Distance(transform.position, target.position) > retreatDistance)
-        {
-            transform.position = this.transform.position;
-            idleAnim = 0;
-        }
-    }
+    
     void Shoot()
     {
         
@@ -213,26 +160,11 @@ public class Roboton : MonoBehaviour
         }
 
     }
-    void DetectTarget()
+   
+
+    protected override void EnemyAnimator()
     {
-        Collider2D col = Physics2D.OverlapCircle(transform.position, detectionRange);
-        PlayerMovement player = col.GetComponentInParent<PlayerMovement>();
-        if (player)
-        {
-            target = player.transform;
-            currentState = State.Active;
-        }
-    }
-
-    void EnemyAnimator()
-    {
-        if (direction != Vector2.zero && canMove == true)
-        {
-
-            anim.SetFloat("Horizontal", direction.x);
-            anim.SetFloat("Vertical", direction.y);
-            anim.SetFloat("Idle", idleAnim);
-
+		base.EnemyAnimator();
             if (direction.x < 0)
             {
                 transform.eulerAngles = new Vector2(0, -180);//ROTATE WHOLE GAMEOBJECT WITH SPRITE AS WELL
@@ -241,13 +173,12 @@ public class Roboton : MonoBehaviour
             {
                 transform.eulerAngles = new Vector2(0, 0);//ROTATE WHOLE GAMEOBJECT WITH SPRITE AS WELL
             }
-        }
+        
     }
    
-    public void TakeDamage(float damage)
+    public override void TakeDamage(float damage)
     {
-        enemyHealth -= damage;
-        StartCoroutine(ChangeColor(0.15f));
+		base.TakeDamage(damage);
         FindObjectOfType<AudioManager>().PlaySound("EnemyTakeDamage");
         if (enemyHealth <= 0)
         {
@@ -289,18 +220,9 @@ public class Roboton : MonoBehaviour
         ExplodeOnDeath();
         
     }
-    IEnumerator ChangeColor(float delay)
-    {
-        rend.color = Color.red;
-        yield return new WaitForSeconds(delay);
-        rend.color = Color.white;
-    }
-    #endregion
+	
+
+	#endregion
 
 }
-public enum State
-{
-    Patrol,
-    Active
 
-}

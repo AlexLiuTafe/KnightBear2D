@@ -1,8 +1,8 @@
 ﻿//==================================
-//Author :
-//Title :
-//Date :
-//Details :
+//Author :ALEX LIU
+//Title :ENEMY AI
+//Date :4 June 2019
+//Details : Referencing from (BLACKTHORNPROD) for Chase,Retreat and Stopping Distance
 //URL (Optional) :
 //==================================
 using System.Collections;
@@ -11,84 +11,41 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class Snake : MonoBehaviour
+public class Snake : EnemyAI
 {
 
-    [Header("Enemy Stats")]
-    public float enemyHealth;
-    public float enemyMaxHealth;
-    public float detectionRange;
-    public Transform target;
-    private Vector2 direction;
-
-    [Header("Enemy Speed")]
-    public float speed;
-    public float patrolSpeed;
-    public float attackRange;
-    public float runSpeed;
-    public float stopDistance;
-    public bool canMove = true;
-
+   
     [Header("Attack")]
     public float damage;
     public float attackDelay;
-    private bool normalAttack = false;
-    public bool canAttack = false;
+	public float attackRange;
 
     private float attackCooldown;
     public float attackTimer;
-    [Header("Animation")]
-    public float idleAnim;//idleAnim parameter
 
-    public Animator anim;
-    private SpriteRenderer rend;
     [Header("Waypoint and State")]
     private int waypointIndex;
 
-    public SnakeState currentState;
-    private void OnDrawGizmos()
+	protected override void OnDrawGizmos()
+	{
+		base.OnDrawGizmos();
+		Gizmos.DrawWireSphere(transform.position, attackRange);
+	}
+	protected override void Start()
     {
-        Gizmos.DrawWireSphere(transform.position, detectionRange);//Showing Detecion Radius
-        Gizmos.DrawWireSphere(transform.position, attackRange);//Showing Attack Range
-    }
-    void Start()
-    {
-
-        rend = GetComponent<SpriteRenderer>();
-        anim = GetComponent<Animator>();
+        base.Start();
         //enemyHealthBar = gameObject.transform.GetComponentInChildren<Slider>();
         //target = GameObject.FindGameObjectWithTag("Player").transform;
         target = WaypointSnake.wayPoints[0];
-        currentState = SnakeState.Patrol;
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
-        //EnemyHealth
-        //enemyHealthBar.value = Mathf.Clamp01(enemyHealth / enemyMaxHealth);
-        if (target && canMove == true)
-        {
-            switch (currentState)
-            {
-                case SnakeState.Patrol:
-                    Patrol();
-                    break;
-                case SnakeState.Active:
-                    Chase();
-                    StopDistance();
-                    break;
-
-
-            }
-            EnemyAnimator();
-        }
-        if (canMove == false)
-        {
-            speed = 0;
-        }
-
-
+		//EnemyHealth
+		//enemyHealthBar.value = Mathf.Clamp01(enemyHealth / enemyMaxHealth);
+		base.Update();
+       
         #region UPDATE Attack
         if (canAttack == true && target && Vector2.Distance(transform.position, target.position) < attackRange)//Checking if player is exist in game
         {
@@ -103,67 +60,24 @@ public class Snake : MonoBehaviour
 
     }
 
-    void Patrol()
+    public override void Patrol()
     {
-        canAttack = false;
-        speed = patrolSpeed;
-        direction = (target.transform.position - transform.position).normalized;//Storing Direction for Anim facing direction
-        transform.position = Vector2.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
-        idleAnim = 1;
-        DetectTarget();
-
-
-        if (Vector2.Distance(transform.position, target.position) <= 0.2f)
+		base.Patrol();
+		if (Vector2.Distance(transform.position, target.position) <= 0.2f)
         {
             waypointIndex++;
-            target = WaypointSnake.wayPoints[waypointIndex];
-
-        }
-        else
-        {
-            if (waypointIndex >= WaypointSnake.wayPoints.Length - 1)
+            if (waypointIndex >= WaypointSnake.wayPoints.Length)
             {
-                waypointIndex = 0;// Doesnt reset to 0 ??
+                waypointIndex = 0;
 
             }
+            target = WaypointSnake.wayPoints[waypointIndex];
+            
+
         }
 
-    }
-
-    void Chase()
-    {
-        canAttack = true;
-        normalAttack = true;
-        if (Vector2.Distance(transform.position, target.position) > stopDistance)
-        {
-            speed = runSpeed;
-            direction = (target.transform.position - transform.position).normalized; //storing facing direction to target.
-            transform.position = Vector2.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
-            idleAnim = 1;
-        }
-
-
-    }
-
-    void StopDistance()
-    {
-        if (Vector2.Distance(transform.position, target.position) < stopDistance)
-        {
-            transform.position = this.transform.position;
-            idleAnim = 0;
-        }
-    }
-
-    void DetectTarget()
-    {
-        Collider2D col = Physics2D.OverlapCircle(transform.position, detectionRange);
-        PlayerMovement player = col.GetComponentInParent<PlayerMovement>();
-        if (player)
-        {
-            target = player.transform;
-            currentState = SnakeState.Active;
-        }
-    }
+	}
+    
     void SnakeAttack()
     {
         Collider2D col = Physics2D.OverlapCircle(transform.position, attackRange);
@@ -177,37 +91,31 @@ public class Snake : MonoBehaviour
 
     }
 
+	protected override void EnemyAnimator()
+	{
+		base.EnemyAnimator();
+		if (direction.x < 0)
+		{
+			transform.eulerAngles = new Vector2(0, 0);
+		}
+		else
+		{
+			transform.eulerAngles = new Vector2(0, -180);//ROTATE WHOLE GAMEOBJECT WITH SPRITE AS WELL
+		}
+	}
+	public override void TakeDamage(float damage)
+	{
+		base.TakeDamage(damage);
+		if (enemyHealth <= 0)
+		{
+			canMove = false;
+			canAttack = false;//Disable attack while death
+			Destroy(gameObject);
+		}
+	}
 
-    void EnemyAnimator()
-    {
-        if (direction != Vector2.zero && canMove == true)
-        {
-
-            anim.SetFloat("Horizontal", direction.x);
-            anim.SetFloat("Vertical", direction.y);
-            anim.SetFloat("Idle", idleAnim);
-
-            if (direction.x < 0)
-            {
-                transform.eulerAngles = new Vector2(0, 0);
-            }
-            else
-            {
-                transform.eulerAngles = new Vector2(0, -180);//ROTATE WHOLE GAMEOBJECT WITH SPRITE AS WELL
-            }
-        }
-    }
-    public void TakeDamage(float damage)
-    {
-        enemyHealth -= damage;
-        if (enemyHealth <= 0)
-        {
-            canMove = false;
-            canAttack = false;//Disable attack while death
-        }
-    }
-    #region IEnumarator
-    IEnumerator AfterAttackDelay(float delay)//Prevent enemy from moving while shooting
+	#region IEnumarator
+	IEnumerator AfterAttackDelay(float delay)//Prevent enemy from moving while shooting
     {
        
         anim.SetTrigger("Attack");
@@ -222,9 +130,4 @@ public class Snake : MonoBehaviour
     #endregion
 
 }
-public enum SnakeState
-{
-    Patrol,
-    Active
 
-}

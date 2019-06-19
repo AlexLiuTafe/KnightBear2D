@@ -70,7 +70,7 @@ public class PlayerAttack : MonoBehaviour
 
             foreach (var collider in hitColliders)
             {
-                Roboton enemy = collider.GetComponent<Roboton>();
+                EnemyAI enemy = collider.GetComponent<EnemyAI>();
                 
                 if (enemy)
                 {
